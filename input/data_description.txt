@@ -1,0 +1,9 @@
+ST（y）: 0 or 1, whether the company has been punished by ST. 0:yes,1: no
+ARA（x1）: the ratio of account receivable to assets. 该比例越高，企业的盈利质量越低，相当一部分收入没有兑现
+ASSET（x2）：反应企业资产规模，该指标越大，一定程度上说明企业的规模越大
+ATO（X3）：asset turnover ratio 资产周转率=销售收入/平均总资产
+ROA（X4）：Return on Assets 利润总额/平均总资产
+GROWTH（X5）：销售收入增长率=本年度销售总额/上年度销售总额
+LEV（X6）：杠杆比率=负债/总资产 该指标过低和过高都不好，过低企业无法利用杠杆效应，过高存在资不抵债风险
+SHARE（X7）：第一大股东的持股比率，反应企业的股权分散程度
+
