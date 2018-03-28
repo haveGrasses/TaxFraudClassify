@@ -18,10 +18,12 @@ print(finan_data.describe())
 X_train, X_test, y_train, y_test = train_test_split(finan_data.ix[:, :-1], finan_data.ix[:, -1],
                                                     test_size=0.3, random_state=0)
 print(y_train.head())
+
 # start build LR model
 lr = LR()
 lr.fit(X_train, y_train)
 print('训练集上的正确率：', lr.score(X_train, y_train))
+
 # test the model
 predictions = lr.predict(X_test)
 print("Accuracy: ", metrics.accuracy_score(y_test, predictions))
