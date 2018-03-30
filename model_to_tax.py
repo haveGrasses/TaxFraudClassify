@@ -108,7 +108,7 @@ for param in params:
     clf = BaggingClassifier(n_estimators=param)
     test_score2 = np.sqrt(-cross_val_score(clf, X_train, y_train, cv=10, scoring='neg_mean_squared_error'))
     test_scores2.append(np.mean(test_score2))
-
+bg_best_param = params[test_scores2.index(min(test_scores2))]
 plt.plot(params, test_scores2)
 plt.title("bagging: n_estimator vs CV Error")
 plt.show()
@@ -121,6 +121,7 @@ for param in params:
     clf = XGBClassifier(max_depth=param)
     test_score3 = np.sqrt(-cross_val_score(clf, X_train, y_train, cv=10, scoring='neg_mean_squared_error'))
     test_scores3.append(np.mean(test_score3))
+xgb_best_param = params[test_scores3.index(min(test_scores3))]
 plt.plot(params, test_scores3)
 plt.title("xgb: max_depth vs CV Error")
 plt.show()
@@ -133,15 +134,16 @@ for max_feat in max_features:
     clf = RandomForestClassifier(n_estimators=100, max_features=max_feat)
     test_score4 = np.sqrt(-cross_val_score(clf, X_train, y_train, cv=5, scoring='neg_mean_squared_error'))
     test_scores4.append(np.mean(test_score4))
+rf_best_param = params[test_scores4.index(min(test_scores4))]
 plt.plot(max_features, test_scores4)
 plt.title("rf: Max Features vs CV Error")
 plt.show()
 # max_feature=0.7, cv error:0.329, 没有xgboost好
 
 
-bg = BaggingClassifier(n_estimators=25)
-rf = RandomForestClassifier(n_estimators=100, max_features=.7)
-xgb = XGBClassifier(max_depth=1)
+bg = BaggingClassifier(n_estimators=bg_best_param)
+rf = RandomForestClassifier(n_estimators=100, max_features=rf_best_param)
+xgb = XGBClassifier(max_depth=xgb_best_param)
 
 lr.fit(X_train, y_train)
 bg.fit(X_train, y_train)
