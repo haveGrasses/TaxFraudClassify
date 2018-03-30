@@ -156,7 +156,6 @@ y_bg = bg.predict(X_test)
 y_lr = lr.predict(X_test)
 y_xgb = xgb.predict(X_test)
 
-# y_combine = (y_lr + y_rf + y_xgb) / 3
 print(y_lr, y_rf, y_xgb)
 
 
