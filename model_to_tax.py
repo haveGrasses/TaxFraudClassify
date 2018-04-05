@@ -3,7 +3,6 @@
 interpreter:py 3.5
 """
 import pandas as pd
-from pandas import DataFrame
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -157,6 +156,15 @@ plt.title("rf: Max Features vs CV Error")
 plt.show()
 # max_feature=0.7, cv error:0.329, 没有xgboost好
 
+# 未经训练的neural network # 待解决
+net = Sequential()
+net.add(Dense(units=10, input_dim=25))
+net.add(Activation('relu'))
+net.add(Dense(units=1, input_dim=10))
+net.add(Activation('sigmoid'))
+net.compile(loss='binary_crossentropy', optimizer='adam')
+net.fit(X_train, y_train, epochs=80, batch_size=1)
+
 
 bg = BaggingClassifier(n_estimators=bg_best_param)
 rf = RandomForestClassifier(n_estimators=100, max_features=rf_best_param)
@@ -173,7 +181,7 @@ y_bg = bg.predict(X_test)
 y_lr = lr.predict(X_test)
 y_xgb = xgb.predict(X_test)
 y_dt = dt.predict(X_test)
-print(y_lr, y_rf, y_xgb, y_dt)
+y_net = net.predict_classes(X_test)
 
 
 def print_metrics(true_values, predicted_values):
@@ -194,7 +202,10 @@ print('#########xgb########')
 print_metrics(y_test, y_xgb)
 print('#########dt########')
 print_metrics(y_test, y_dt)
+print('#########net########')
+print_metrics(y_test, y_net)
+# xgb >= bg > lr > dt=net > rf
+# 最简单的决策树也有很好的表现,和神经网络一样的效果，Emmmm,神经网络还需要优化
 
-# xgb >= bg > lr > dt > rf
-# 最简单的决策树也有很好的表现
+
 
