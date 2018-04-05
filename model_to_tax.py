@@ -15,11 +15,14 @@ from sklearn import metrics
 from keras import Sequential
 from keras.layers.core import Dense, Activation
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import export_graphviz  # decision tree visualization
+# import pydot  # convert .dot to .pdf (decision tree visualization)
+
 plt.rcParams['font.sans-serif'] = ['SimHei']
 df_raw = pd.read_csv('./input/汽车销售纳税人偷漏税文件.csv', encoding='utf-8', index_col=0)
 # print(df_raw.head(), df_raw.shape, df_raw.describe())
 
-# view the output
+# take a view of y
 # df_raw["输出"].value_counts().plot('bar')
 # plt.show()
 # 正负样本基本均衡
@@ -52,6 +55,7 @@ def plot_relation(x, xname):
 
 # reformat the raw_df
 # print(df_raw.dtypes)
+
 # change the value of '输出' to 0 or 1
 
 
@@ -125,7 +129,20 @@ xgb_best_param = params[test_scores3.index(min(test_scores3))]
 plt.plot(params, test_scores3)
 plt.title("xgb: max_depth vs CV Error")
 plt.show()
-# xgboost 1棵树就能达到0.31的小误差。。。
+# xgboost 1棵树就能达到0.31的小误差。。。很强大
+
+# Decision Tree
+dt = DecisionTreeClassifier(criterion='entropy')
+dt.fit(X_train, y_train)
+# visualization
+export_graphviz(dt, out_file='tree.dot',
+                feature_names=list(X_train.columns.T),
+                class_names=['no fraud', 'fraud'],
+                filled=True,
+                rounded=True,
+                special_characters=True)
+# 修改tree.dot fontname="SimHei"显示中文
+# dos命令编译 dot.Tpdf tree.dot -o tree.pdf / dot Tpng tree.dot -o tree.png
 
 # random forest
 max_features = [.1, .3, .5, .7, .9, .99]
@@ -155,8 +172,8 @@ y_rf = rf.predict(X_test)
 y_bg = bg.predict(X_test)
 y_lr = lr.predict(X_test)
 y_xgb = xgb.predict(X_test)
-
-print(y_lr, y_rf, y_xgb)
+y_dt = dt.predict(X_test)
+print(y_lr, y_rf, y_xgb, y_dt)
 
 
 def print_metrics(true_values, predicted_values):
@@ -167,11 +184,17 @@ def print_metrics(true_values, predicted_values):
           )
 
 
+print('#########lr########')
 print_metrics(y_test, y_lr)
+print('#########bg########')
 print_metrics(y_test, y_bg)
+print('#########rf########')
 print_metrics(y_test, y_rf)
+print('#########xgb########')
 print_metrics(y_test, y_xgb)
-# lr < bg = rf = xgb
+print('#########dt########')
+print_metrics(y_test, y_dt)
 
-
+# xgb >= bg > lr > dt > rf
+# 最简单的决策树也有很好的表现
 
